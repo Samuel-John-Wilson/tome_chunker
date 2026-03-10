@@ -6,6 +6,7 @@ venv/
 
 # Data
 data/*.pdf
+data/*.pdf*
 output/
 
 # IDE

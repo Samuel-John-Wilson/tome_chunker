@@ -7,7 +7,7 @@ from typing import List, Dict
 import re
 
 # Import configuration settings
-from src.config import MIN_LINE_LENGTH
+from config import MIN_LINE_LENGTH
 
 def extract_text(pdf_path: str) -> str:
     """Extract text from a PDF file using pdfminer.six."""
@@ -19,10 +19,10 @@ def extract_text(pdf_path: str) -> str:
     # These control how pdfminer interprets the PDF layout
 
     laparams = LAParams(
-        line_margin=0.5   # Distance between lines
-        word_margin=0.1   # Distance between words
-        char_margin=0.1   # Distance between characters
-        boxes_flow=0.5    # How much to consider text as flowing in a block
+        line_margin=0.5,   # Distance between lines
+        word_margin=0.1, # Distance between words
+        char_margin=0.1,  # Distance between characters
+        boxes_flow=0.5,   # How much to consider text as flowing in a block
         detect_vertical=False  # Whether to detect vertical text 
     )
 
@@ -70,14 +70,14 @@ def _clean_text(text: str) -> str:
 
 # 3: Main Extractor Class
 
- """
+"""
     Main class for PDF extraction
     
     Why a class?
         - Encapsulates extraction logic
         - Can maintain state (like current page)
         - Easy to extend with more methods
-    """
+"""
 class PDFExtractor:
 
     def __init__(self, pdf_path: str):
