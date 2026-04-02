@@ -54,4 +54,55 @@ class RuleChunker:
     def _create_chunks(self, paragraphs: List[str], page_num: int, source: str) -> List[tuple]:
         # Group paragraphs into size-appropriate chunks
 
+        chunks = [] # list of completed chunks
+        current_chunk = [] # paragraphs in the current chunk
+        current_length = 0 # character count of the current chunk
+
+        for para in paragraphs:
+            para_length = len(para)
+
+            if current_length + para_length > CHUNK_SIZE and current_chunk: # Oversize!
+
+                chunk_text = '\n\n'.join(current_chunk)
+                metadata = self._build_metadata(chunk_text, page_num, source)
+                chunks.append((chunk_text, metadata))
+            # Start new chunk with overlap
+            # Keep the last paragraph for context continuity 
+                if current_chunk:
+                    overlap_text = current_chunk[-1]
+                    current_chunk = [overlap_text, para]
+                    current_length = len(overlap_text) + para_length
+                else:
+                    current_chunk = [para]
+                    current_length = para_length
+            else: # still room in current chunk
+                current_chunk.append(para)
+                current_length += para_length
+        # process last chunk
         
+        # Don't forget the last chunk!
+        if current_chunk:
+            chunk_text = '\n\n'.join(current_chunk)
+            
+            if len(chunk_text) >= MIN_CHUNK_SIZE:
+                # Big enough - save normally
+                metadata = self._build_metadata(chunk_text, page_num, source)
+                chunks.append((chunk_text, metadata))
+            elif chunks:
+                # Too small - append to previous chunk
+                last_chunk_text, last_metadata = chunks[-1]
+                combined_text = last_chunk_text + '\n\n' + chunk_text
+                chunks[-1] = (combined_text, last_metadata)
+                print(f"⚠️  Merged small final chunk ({len(chunk_text)} chars) into previous chunk")
+            else:
+                # First AND last chunk, but too small - save it anyway
+                # (Better to have something than nothing)
+                metadata = self._build_metadata(chunk_text, page_num, source)
+                chunks.append((chunk_text, metadata))
+                print(f"⚠️  Saved undersized chunk ({len(chunk_text)} chars) - only chunk on page") 
+        return chunks
+
+
+    def _detect_sections(self, text: str):
+        # Update current section looking for headers
+        # check claude - new plan here.         

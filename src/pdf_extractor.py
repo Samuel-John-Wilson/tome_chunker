@@ -2,7 +2,11 @@
 
 from io import StringIO
 from pdfminer.high_level import extract_text_to_fp
-from pdfminer.layout import LAParams
+from pdfminer.layout import LAParams, LTTextContainer
+from pdfminer.converter import PDFPageAggregator
+from pdfminer.pdfpage import PDFPage
+from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
+
 from typing import List, Dict
 import re
 
