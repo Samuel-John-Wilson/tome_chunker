@@ -2,15 +2,11 @@
 
 from io import StringIO
 from pdfminer.high_level import extract_text_to_fp
-from pdfminer.layout import LAParams, LTTextContainer
-from pdfminer.converter import PDFPageAggregator
-from pdfminer.pdfpage import PDFPage
-from pdfminer.pdfinterp import PDFResourceManager, PDFPageInterpreter
-
+from pdfminer.layout import LAParams
 from typing import List, Dict
 import re
 
-# Import configuration settings
+# Import configuration
 from config import MIN_LINE_LENGTH
 
 def extract_text(pdf_path: str) -> str:
@@ -159,10 +155,16 @@ if __name__ == "__main__":
         pages = extractor.extract()
         # Print the first page's text as a sample
         if pages:
-            print(f"\nFirst page preview:")
-            print("=" * 60)
-            print(pages[0]['text'][:500]) # First 500 characters of the first page
+            print(f"\n{'='*60}")
+            print(f"First page preview:")
+            print('='*60)
+            print(pages[0]['text'][:500])
             print("...")
+            print('='*60)
+            print(f"\nExtracted {len(pages)} total pages")
+            print(f"First page has {len(pages[0]['text'])} characters")
+        else:
+            print("No pages extracted - PDF may be empty or image-based")
         
     except FileNotFoundError as e:
         print(f"Error: {e}")

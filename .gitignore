@@ -12,3 +12,6 @@ output/
 # IDE
 .vscode/
 .idea/
+
+# Guide
+guide/
