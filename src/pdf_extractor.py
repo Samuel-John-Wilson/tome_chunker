@@ -7,7 +7,7 @@ from typing import List, Dict
 import re
 
 # Import configuration
-from config import MIN_LINE_LENGTH
+from src.config import MIN_LINE_LENGTH
 
 def extract_text(pdf_path: str) -> str:
     """Extract text from a PDF file using pdfminer.six."""
@@ -52,24 +52,21 @@ def extract_text(pdf_path: str) -> str:
 # 2: Clean extracted text
 
 def _clean_text(text: str) -> str:
-    """Clean extracted text by removing unwanted characters and normalizing whitespace."""
+    """Clean extracted text by removing artifacts"""
+    
+    # Remove watermark
+    text = re.sub(r'Sam Wilson \(Order #\d+\)', '', text)
+    
     # Remove excessive whitespace
-    # re.sub(pattern, replacement, string)
-    # Pattern '\n\s*\n' means: newline + any whitespace + newline
-    # Replace with exactly two newlines
-
     text = re.sub(r'\n\s*\n', '\n\n', text)
-
-    # Split into individual lines
+    
+    # Filter out short lines
     lines = text.split('\n')
-
-    # Filter out short lines (less than MIN_LINE_LENGTH characters)
-
     cleaned_lines = [
-        line for line in lines if len(line.strip()) >= MIN_LINE_LENGTH
+        line for line in lines 
+        if len(line.strip()) >= MIN_LINE_LENGTH
     ]
-
-    # Join lines back together
+    
     return '\n'.join(cleaned_lines)
 
 # 3: Main Extractor Class
